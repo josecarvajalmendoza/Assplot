@@ -1,0 +1,22 @@
+# Framework Web
+Flask==2.3.3
+Werkzeug==2.3.7
+
+# Base de Datos
+Flask-SQLAlchemy==3.0.5
+SQLAlchemy==2.0.20
+
+# Autenticación
+Flask-Login==0.6.3
+
+# Generación de PDFs
+fpdf2==2.7.6
+
+# Manejo de fechas
+python-dateutil==2.8.2
+
+# Procesamiento de imágenes
+Pillow==10.0.0
+
+# Utilidades
+python-dotenv==1.0.0
