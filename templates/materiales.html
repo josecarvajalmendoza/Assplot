@@ -1,0 +1,102 @@
+{% extends "layout.html" %}
+
+{% block title %}Materiales - As Plot Center{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Catálogo de Materiales</h1>
+    <p>Gestiona los materiales disponibles</p>
+    <div class="header-actions">
+        <a href="{{ url_for('inventario') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i>
+            Volver al Inventario
+        </a>
+        <a href="{{ url_for('crear_material') }}" class="btn btn-primary">
+            <i class="fas fa-plus"></i>
+            Nuevo Material
+        </a>
+    </div>
+</div>
+
+<div class="search-section">
+    <form method="GET" class="search-form">
+        <div class="search-input">
+            <i class="fas fa-search"></i>
+            <input type="text" name="search" placeholder="Buscar materiales..." value="{{ search }}">
+        </div>
+        <select name="categoria" class="filter-select">
+            <option value="">Todas las Categorías</option>
+            <option value="papel" {% if categoria == 'papel' %}selected{% endif %}>Papel</option>
+            <option value="tinta" {% if categoria == 'tinta' %}selected{% endif %}>Tinta</option>
+            <option value="herramienta" {% if categoria == 'herramienta' %}selected{% endif %}>Herramientas</option>
+            <option value="otro" {% if categoria == 'otro' %}selected{% endif %}>Otros</option>
+        </select>
+        <button type="submit" class="btn btn-secondary">
+            <i class="fas fa-filter"></i>
+            Filtrar
+        </button>
+    </form>
+</div>
+
+<div class="table-container">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Material</th>
+                <th>Categoría</th>
+                <th>Subcategoría</th>
+                <th>Precio Compra</th>
+                <th>Precio Venta</th>
+                <th>Unidad</th>
+                <th>Stock Mínimo</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for material in materiales %}
+            <tr>
+                <td>{{ material.id_material }}</td>
+                <td>
+                    <strong>{{ material.nombre_material }}</strong>
+                    <br>
+                    <small>{{ material.descripcion }}</small>
+                </td>
+                <td>
+                    <span class="badge badge-{{ material.categoria }}">
+                        {{ material.categoria.title() }}
+                    </span>
+                </td>
+                <td>{{ material.subcategoria or '-' }}</td>
+                <td class="text-right">${{ "%.2f"|format(material.precio_compra) }}</td>
+                <td class="text-right"><strong>${{ "%.2f"|format(material.precio_unitario) }}</strong></td>
+                <td class="text-center">{{ material.unidad_medida }}</td>
+                <td class="text-center">{{ material.stock_minimo }}</td>
+                <td>
+                    <div class="action-buttons">
+                        <a href="{{ url_for('editar_material', id=material.id_material) }}" 
+                           class="btn btn-sm btn-primary" title="Editar">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <a href="{{ url_for('eliminar_material', id=material.id_material) }}" 
+                           class="btn btn-sm btn-red" title="Desactivar"
+                           onclick="return confirm('¿Estás seguro de desactivar este material?')">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="9" class="text-center">
+                    <div class="no-data">
+                        <i class="fas fa-box"></i>
+                        <p>No hay materiales registrados</p>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,70 @@
+{% extends "layout.html" %}
+
+{% block title %}Editar Proyecto - As Plot Center{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Editar Proyecto</h1>
+    <a href="{{ url_for('proyectos') }}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i>
+        Volver
+    </a>
+</div>
+
+<div class="form-container">
+    <form method="POST" class="form">
+        <div class="form-group">
+            <label for="id_cliente">Cliente *</label>
+            <select id="id_cliente" name="id_cliente" required>
+                <option value="">Seleccionar cliente</option>
+                {% for cliente in clientes %}
+                <option value="{{ cliente.id_cliente }}" {% if cliente.id_cliente == proyecto.id_cliente %}selected{% endif %}>
+                    {{ cliente.nombre_completo }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="nombre_proyecto">Nombre del Proyecto *</label>
+            <input type="text" id="nombre_proyecto" name="nombre_proyecto" value="{{ proyecto.nombre_proyecto }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="descripcion">Descripción *</label>
+            <textarea id="descripcion" name="descripcion" rows="4" required>{{ proyecto.descripcion }}</textarea>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="fecha_inicio">Fecha de Inicio *</label>
+                <input type="date" id="fecha_inicio" name="fecha_inicio" value="{{ proyecto.fecha_inicio }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="fecha_fin">Fecha de Fin *</label>
+                <input type="date" id="fecha_fin" name="fecha_fin" value="{{ proyecto.fecha_fin }}" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="estado">Estado *</label>
+            <select id="estado" name="estado" required>
+                <option value="planificacion" {% if proyecto.estado == 'planificacion' %}selected{% endif %}>Planificación</option>
+                <option value="en_progreso" {% if proyecto.estado == 'en_progreso' %}selected{% endif %}>En Progreso</option>
+                <option value="completado" {% if proyecto.estado == 'completado' %}selected{% endif %}>Completado</option>
+                <option value="cancelado" {% if proyecto.estado == 'cancelado' %}selected{% endif %}>Cancelado</option>
+            </select>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i>
+                Actualizar Proyecto
+            </button>
+            <a href="{{ url_for('proyectos') }}" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+

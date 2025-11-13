@@ -1,0 +1,107 @@
+{% extends "layout.html" %}
+
+{% block title %}Gestión de Planos - As Plot Center{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Gestión de Planos</h1>
+    <p>Administra y visualiza todos los planos del sistema</p>
+    <div class="header-actions">
+        <a href="{{ url_for('buscar_planos') }}" class="btn btn-secondary">
+            <i class="fas fa-search"></i>
+            Búsqueda Avanzada
+        </a>
+        <a href="{{ url_for('subir_plano') }}" class="btn btn-primary">
+            <i class="fas fa-upload"></i>
+            Subir Plano
+        </a>
+    </div>
+</div>
+
+<!-- Barra de búsqueda y filtros -->
+<div class="search-section">
+    <form method="GET" class="search-form">
+        <div class="search-input">
+            <i class="fas fa-search"></i>
+            <input type="text" name="search" placeholder="Buscar planos..." value="{{ search }}">
+        </div>
+        <select name="tipo" class="filter-select">
+            <option value="">Todos los Planos</option>
+            {% for tipo in tipos_plano %}
+            <option value="{{ tipo.id_tipo_plano }}" {% if tipo|string == tipo %}selected{% endif %}>
+                {{ tipo.nombre_tipo }}
+            </option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn btn-secondary">
+            <i class="fas fa-filter"></i>
+            Filtrar
+        </button>
+    </form>
+</div>
+
+<!-- Tarjetas de planos -->
+<div class="plans-grid">
+    {% for plano in planos %}
+    <div class="plan-card">
+        <div class="plan-header">
+            <h3>{{ plano.nombre_plano }}</h3>
+            <div class="plan-type">
+                <span class="type-badge type-{{ plano.tipo_plano.nombre_tipo.lower() }}">
+                    {{ plano.tipo_plano.nombre_tipo }}
+                </span>
+            </div>
+        </div>
+        
+        <div class="plan-details">
+            <div class="detail-item">
+                <i class="fas fa-user"></i>
+                <span>{{ plano.proyecto.cliente.nombre_completo }}</span>
+            </div>
+            <div class="detail-item">
+                <i class="fas fa-calendar"></i>
+                <span>{{ plano.fecha_subida.strftime('%Y-%m-%d') }}</span>
+            </div>
+            <div class="detail-item">
+                <i class="fas fa-folder"></i>
+                <span>{{ plano.proyecto.nombre_proyecto }}</span>
+            </div>
+            <div class="detail-item">
+                <i class="fas fa-file"></i>
+                <span>{{ plano.archivo.split('.')[-1].upper() }}</span>
+            </div>
+        </div>
+        
+        <div class="plan-actions">
+            <a href="{{ url_for('detalle_plano', id=plano.id_plano) }}" 
+               class="btn btn-sm btn-info">
+                <i class="fas fa-info-circle"></i>
+                Detalle
+            </a>
+            <a href="{{ url_for('ver_plano', id=plano.id_plano) }}" 
+               class="btn btn-sm btn-green" target="_blank">
+                <i class="fas fa-eye"></i>
+                Ver
+            </a>
+            <a href="{{ url_for('descargar_plano', id=plano.id_plano) }}" 
+               class="btn btn-sm btn-blue">
+                <i class="fas fa-download"></i>
+                Descargar
+            </a>
+            <a href="{{ url_for('eliminar_plano', id=plano.id_plano) }}" 
+               class="btn btn-sm btn-red"
+               onclick="return confirm('¿Estás seguro de que quieres eliminar este plano?')">
+                <i class="fas fa-trash"></i>
+                Eliminar
+            </a>
+        </div>
+    </div>
+    {% else %}
+    <div class="no-data">
+        <i class="fas fa-file-alt"></i>
+        <p>No hay planos registrados</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+

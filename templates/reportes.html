@@ -1,0 +1,141 @@
+{% extends "layout.html" %}
+
+{% block title %}Reportes - As Plot Center{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Reportes</h1>
+    <p>Genera y descarga reportes detallados del sistema</p>
+</div>
+
+<!-- Selección de tipo de reporte -->
+<div class="report-section">
+    <h3>Seleccionar Tipo de Reporte</h3>
+    <div class="report-types">
+        <div class="report-type-card" data-type="clientes">
+            <div class="report-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <h4>Reporte de Clientes</h4>
+            <p>Lista detallada de clientes</p>
+        </div>
+
+        <div class="report-type-card" data-type="proyectos">
+            <div class="report-icon">
+                <i class="fas fa-folder"></i>
+            </div>
+            <h4>Reporte de Proyectos</h4>
+            <p>Estado de proyectos activos</p>
+        </div>
+
+        <div class="report-type-card" data-type="ventas">
+            <div class="report-icon">
+                <i class="fas fa-dollar-sign"></i>
+            </div>
+            <h4>Reporte de Ventas</h4>
+            <p>Análisis de ventas por período</p>
+        </div>
+
+        <div class="report-type-card" data-type="inventario">
+            <div class="report-icon">
+                <i class="fas fa-box"></i>
+            </div>
+            <h4>Reporte de Inventario</h4>
+            <p>Stock de materiales y suministros</p>
+        </div>
+
+        <div class="report-type-card" data-type="planos">
+            <div class="report-icon">
+                <i class="fas fa-file-alt"></i>
+            </div>
+            <h4>Reporte de Planos</h4>
+            <p>Todos los planos registrados</p>
+        </div>
+
+        <div class="report-type-card" data-type="stock_bajo">
+            <div class="report-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <h4>Stock Bajo</h4>
+            <p>Materiales que necesitan reposición</p>
+        </div>
+    </div>
+</div>
+
+<!-- Configuración del reporte -->
+<div class="report-section">
+    <h3>Configuración del Reporte</h3>
+    <form id="report-form" method="POST" action="{{ url_for('generar_reporte') }}">
+        <div class="form-group">
+            <label for="tipo_reporte">Tipo de Reporte</label>
+            <select id="tipo_reporte" name="tipo_reporte" required>
+                <option value="clientes">Reporte de Clientes</option>
+                <option value="proyectos">Reporte de Proyectos</option>
+                <option value="ventas">Reporte de Ventas</option>
+                <option value="inventario">Reporte de Inventario</option>
+                <option value="planos">Reporte de Planos</option>
+                <option value="stock_bajo">Reporte de Stock Bajo</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="periodo">Período</label>
+            <select id="periodo" name="periodo">
+                <option value="este_mes" selected>Este mes</option>
+                <option value="mes_pasado">Mes pasado</option>
+                <option value="ultimos_3_meses">Últimos 3 meses</option>
+                <option value="ultimos_6_meses">Últimos 6 meses</option>
+                <option value="este_año">Este año</option>
+                <option value="todos">Todos los registros</option>
+            </select>
+        </div>
+    </form>
+</div>
+
+<!-- Vista previa del reporte -->
+<div class="report-section">
+    <h3>Vista Previa del Reporte</h3>
+    <div class="report-preview">
+        <div class="preview-placeholder">
+            <i class="fas fa-chart-bar"></i>
+            <p>Selecciona un tipo de reporte y configuración para generar la vista previa</p>
+        </div>
+    </div>
+</div>
+
+<!-- Botón de descarga -->
+<div class="report-actions">
+    <button type="submit" form="report-form" class="btn btn-primary btn-large">
+        <i class="fas fa-download"></i>
+        Descargar PDF
+    </button>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const reportCards = document.querySelectorAll('.report-type-card');
+    const tipoReporteSelect = document.getElementById('tipo_reporte');
+    
+    reportCards.forEach(card => {
+        card.addEventListener('click', function() {
+            // Remover clase active de todas las tarjetas
+            reportCards.forEach(c => c.classList.remove('active'));
+            
+            // Agregar clase active a la tarjeta clickeada
+            this.classList.add('active');
+            
+            // Actualizar el select
+            const tipo = this.dataset.type;
+            tipoReporteSelect.value = tipo;
+        });
+    });
+});
+</script>
+{% endblock %}
+
+
+
+
+

@@ -1,0 +1,138 @@
+{% extends "layout.html" %}
+
+{% block title %}Detalle de Venta - As Plot Center{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Detalle de Venta #{{ venta.id_venta }}</h1>
+    <p>Información completa de la venta</p>
+    <a href="{{ url_for('ventas') }}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i>
+        Volver
+    </a>
+</div>
+
+<div class="detail-container">
+    <div class="detail-card">
+        <div class="detail-header">
+            <h2>Factura #{{ "%06d"|format(venta.id_venta) }}</h2>
+            <span class="status-badge status-{{ venta.estado }}">
+                {{ venta.estado.title() }}
+            </span>
+        </div>
+        
+        <div class="detail-body">
+            <div class="detail-section">
+                <h3><i class="fas fa-info-circle"></i> Información de la Venta</h3>
+                <div class="detail-grid">
+                    <div class="detail-field">
+                        <label>Fecha:</label>
+                        <span>{{ venta.fecha_venta.strftime('%d/%m/%Y %H:%M:%S') }}</span>
+                    </div>
+                    <div class="detail-field">
+                        <label>Método de Pago:</label>
+                        <span>{{ venta.metodo_pago.title() if venta.metodo_pago else 'No especificado' }}</span>
+                    </div>
+                    <div class="detail-field">
+                        <label>Atendido por:</label>
+                        <span>{{ venta.usuario.nombre_usuario }}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="detail-section">
+                <h3><i class="fas fa-user"></i> Información del Cliente</h3>
+                <div class="detail-grid">
+                    <div class="detail-field">
+                        <label>Cliente:</label>
+                        <span><strong>{{ venta.cliente.nombre_completo }}</strong></span>
+                    </div>
+                    <div class="detail-field">
+                        <label>Email:</label>
+                        <span>{{ venta.cliente.email }}</span>
+                    </div>
+                    <div class="detail-field">
+                        <label>Teléfono:</label>
+                        <span>{{ venta.cliente.telefono }}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="detail-section">
+                <h3><i class="fas fa-list"></i> Detalles de la Venta</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Descripción</th>
+                            <th>Cantidad</th>
+                            <th>Precio Unitario</th>
+                            <th>Descuento</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for detalle in venta.detalle_ventas %}
+                        <tr>
+                            <td>{{ detalle.descripcion }}</td>
+                            <td class="text-center">{{ detalle.cantidad }}</td>
+                            <td class="text-right">${{ "%.2f"|format(detalle.precio_unitario) }}</td>
+                            <td class="text-right">${{ "%.2f"|format(detalle.descuento) }}</td>
+                            <td class="text-right"><strong>${{ "%.2f"|format(detalle.subtotal) }}</strong></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="detail-section">
+                <h3><i class="fas fa-calculator"></i> Totales</h3>
+                <div class="totals-grid">
+                    <div class="total-row">
+                        <span>Subtotal:</span>
+                        <span>${{ "%.2f"|format(venta.subtotal) }}</span>
+                    </div>
+                    {% if venta.impuesto > 0 %}
+                    <div class="total-row">
+                        <span>Impuesto:</span>
+                        <span>${{ "%.2f"|format(venta.impuesto) }}</span>
+                    </div>
+                    {% endif %}
+                    {% if venta.descuento > 0 %}
+                    <div class="total-row">
+                        <span>Descuento:</span>
+                        <span>-${{ "%.2f"|format(venta.descuento) }}</span>
+                    </div>
+                    {% endif %}
+                    <div class="total-row total-final">
+                        <span><strong>TOTAL:</strong></span>
+                        <span><strong>${{ "%.2f"|format(venta.total) }}</strong></span>
+                    </div>
+                </div>
+            </div>
+            
+            {% if venta.notas %}
+            <div class="detail-section">
+                <h3><i class="fas fa-sticky-note"></i> Notas</h3>
+                <p>{{ venta.notas }}</p>
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="detail-actions">
+            <a href="{{ url_for('imprimir_venta', id=venta.id_venta) }}" 
+               class="btn btn-primary">
+                <i class="fas fa-print"></i>
+                Imprimir Factura
+            </a>
+            {% if venta.estado != 'cancelada' %}
+            <a href="{{ url_for('eliminar_venta', id=venta.id_venta) }}" 
+               class="btn btn-red"
+               onclick="return confirm('¿Estás seguro de cancelar esta venta?')">
+                <i class="fas fa-ban"></i>
+                Cancelar Venta
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,99 @@
+{% extends "layout.html" %}
+
+{% block title %}Ajustar Inventario - As Plot Center{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Ajustar Inventario</h1>
+    <p>Modifica el stock del material: {{ inventario.material.nombre_material }}</p>
+    <a href="{{ url_for('inventario') }}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i>
+        Volver
+    </a>
+</div>
+
+<div class="form-container">
+    <div class="info-card">
+        <h3>Información Actual</h3>
+        <div class="info-grid">
+            <div class="info-item">
+                <label>Material:</label>
+                <span><strong>{{ inventario.material.nombre_material }}</strong></span>
+            </div>
+            <div class="info-item">
+                <label>Cantidad Actual:</label>
+                <span><strong>{{ inventario.cantidad }}</strong> {{ inventario.material.unidad_medida }}</span>
+            </div>
+            <div class="info-item">
+                <label>Stock Mínimo:</label>
+                <span>{{ inventario.material.stock_minimo }}</span>
+            </div>
+            <div class="info-item">
+                <label>Ubicación:</label>
+                <span>{{ inventario.ubicacion or 'No especificada' }}</span>
+            </div>
+        </div>
+    </div>
+
+    <form method="POST" class="form-card">
+        <div class="form-section">
+            <h3>Ajuste de Stock</h3>
+            <div class="form-group">
+                <label for="tipo_ajuste">Tipo de Ajuste *</label>
+                <select id="tipo_ajuste" name="tipo_ajuste" class="form-control" required>
+                    <option value="entrada">Entrada (Agregar stock)</option>
+                    <option value="salida">Salida (Retirar stock)</option>
+                    <option value="ajuste">Ajuste Manual (Establecer cantidad exacta)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="cantidad">Cantidad *</label>
+                <input type="number" id="cantidad" name="cantidad" 
+                       class="form-control" min="0" required>
+                <small id="cantidad-help">Ingrese la cantidad a agregar, retirar o establecer</small>
+            </div>
+
+            <div class="form-group">
+                <label for="ubicacion">Ubicación en Almacén</label>
+                <input type="text" id="ubicacion" name="ubicacion" 
+                       class="form-control" value="{{ inventario.ubicacion or '' }}" 
+                       placeholder="Ej: Almacén A - Estante 1">
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i>
+                Guardar Ajuste
+            </button>
+            <a href="{{ url_for('inventario') }}" class="btn btn-secondary">
+                <i class="fas fa-times"></i>
+                Cancelar
+            </a>
+        </div>
+    </form>
+</div>
+
+<script>
+document.getElementById('tipo_ajuste').addEventListener('change', function() {
+    const helpText = document.getElementById('cantidad-help');
+    const cantidadInput = document.getElementById('cantidad');
+    
+    switch(this.value) {
+        case 'entrada':
+            helpText.textContent = 'Ingrese la cantidad a agregar al stock';
+            cantidadInput.value = '';
+            break;
+        case 'salida':
+            helpText.textContent = 'Ingrese la cantidad a retirar del stock';
+            cantidadInput.value = '';
+            break;
+        case 'ajuste':
+            helpText.textContent = 'Ingrese la cantidad exacta que debe tener el stock';
+            cantidadInput.value = '{{ inventario.cantidad }}';
+            break;
+    }
+});
+</script>
+{% endblock %}

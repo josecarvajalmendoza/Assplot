@@ -1,0 +1,98 @@
+{% extends "layout.html" %}
+
+{% block title %}Gestión de Proyectos - As Plot Center{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Gestión de Proyectos</h1>
+    <p>Administra todos los proyectos de construcción</p>
+    <a href="{{ url_for('crear_proyecto') }}" class="btn btn-primary">
+        <i class="fas fa-plus"></i>
+        Agregar Proyecto
+    </a>
+</div>
+
+<!-- Barra de búsqueda y filtros -->
+<div class="search-section">
+    <form method="GET" class="search-form">
+        <div class="search-input">
+            <i class="fas fa-search"></i>
+            <input type="text" name="search" placeholder="Buscar proyectos..." value="{{ search }}">
+        </div>
+        <select name="estado" class="filter-select">
+            <option value="">Todos los estados</option>
+            <option value="planificacion" {% if estado == 'planificacion' %}selected{% endif %}>Planificación</option>
+            <option value="en_progreso" {% if estado == 'en_progreso' %}selected{% endif %}>En Progreso</option>
+            <option value="completado" {% if estado == 'completado' %}selected{% endif %}>Completado</option>
+            <option value="cancelado" {% if estado == 'cancelado' %}selected{% endif %}>Cancelado</option>
+        </select>
+        <button type="submit" class="btn btn-secondary">
+            <i class="fas fa-filter"></i>
+            Filtrar
+        </button>
+    </form>
+</div>
+
+<!-- Tarjetas de proyectos -->
+<div class="projects-grid">
+    {% for proyecto in proyectos %}
+    <div class="project-card">
+        <div class="project-header">
+            <h3>{{ proyecto.nombre_proyecto }}</h3>
+            <div class="project-actions">
+                <a href="{{ url_for('editar_proyecto', id=proyecto.id_proyecto) }}" class="btn-icon btn-blue">
+                    <i class="fas fa-edit"></i>
+                </a>
+                <a href="{{ url_for('eliminar_proyecto', id=proyecto.id_proyecto) }}" 
+                   class="btn-icon btn-red"
+                   onclick="return confirm('¿Estás seguro de que quieres eliminar este proyecto?')">
+                    <i class="fas fa-trash"></i>
+                </a>
+            </div>
+        </div>
+        
+        <div class="project-status">
+            <span class="status-badge status-{{ proyecto.estado }}">
+                {{ proyecto.estado.replace('_', ' ').title() }}
+            </span>
+        </div>
+        
+        <div class="project-description">
+            <p>{{ proyecto.descripcion }}</p>
+        </div>
+        
+        <div class="project-details">
+            <div class="detail-item">
+                <i class="fas fa-user"></i>
+                <span>{{ proyecto.cliente.nombre_completo }}</span>
+            </div>
+            <div class="detail-item">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>{{ proyecto.cliente.direccion }}</span>
+            </div>
+            <div class="detail-item">
+                <i class="fas fa-calendar"></i>
+                <span>{{ proyecto.fecha_inicio }} - {{ proyecto.fecha_fin }}</span>
+            </div>
+            <div class="detail-item">
+                <i class="fas fa-file-alt"></i>
+                <span>{{ proyecto.planos|length }} planos asociados</span>
+            </div>
+        </div>
+        
+        <div class="project-footer">
+            <a href="#" class="btn btn-sm btn-green">
+                <i class="fas fa-eye"></i>
+                Ver detalles
+            </a>
+        </div>
+    </div>
+    {% else %}
+    <div class="no-data">
+        <i class="fas fa-folder-open"></i>
+        <p>No hay proyectos registrados</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+

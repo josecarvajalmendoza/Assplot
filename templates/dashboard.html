@@ -1,0 +1,178 @@
+{% extends "layout.html" %}
+
+{% block title %}Dashboard - As Plot Center{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Resumen General</h1>
+    <p>Vista general de las operaciones de ASPLOT CENTER</p>
+</div>
+
+<!-- KPIs Cards -->
+<div class="kpi-section">
+    <div class="kpi-row">
+        <!-- Métricas Generales -->
+        <div class="kpi-card kpi-green">
+            <div class="kpi-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="kpi-content">
+                <h3>Clientes</h3>
+                <span class="kpi-number">{{ total_clientes }}</span>
+            </div>
+        </div>
+
+        <div class="kpi-card kpi-orange">
+            <div class="kpi-icon">
+                <i class="fas fa-truck"></i>
+            </div>
+            <div class="kpi-content">
+                <h3>Proveedores</h3>
+                <span class="kpi-number">10</span>
+            </div>
+        </div>
+
+        <div class="kpi-card kpi-purple">
+            <div class="kpi-icon">
+                <i class="fas fa-box"></i>
+            </div>
+            <div class="kpi-content">
+                <h3>Productos</h3>
+                <span class="kpi-number">{{ total_planos }}</span>
+            </div>
+        </div>
+
+        <div class="kpi-card kpi-gray">
+            <div class="kpi-icon">
+                <i class="fas fa-file-invoice"></i>
+            </div>
+            <div class="kpi-content">
+                <h3>Facturas</h3>
+                <span class="kpi-number">{{ total_ventas }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="kpi-row">
+        <!-- Métricas de Inventario -->
+        <div class="kpi-card kpi-blue">
+            <div class="kpi-icon">
+                <i class="fas fa-boxes"></i>
+            </div>
+            <div class="kpi-content">
+                <h3>Existencia Total</h3>
+                <span class="kpi-number">{{ existencia_total }}</span>
+            </div>
+        </div>
+
+        <div class="kpi-card kpi-red">
+            <div class="kpi-icon">
+                <i class="fas fa-truck"></i>
+            </div>
+            <div class="kpi-content">
+                <h3>Existencia Vendida</h3>
+                <span class="kpi-number">33</span>
+            </div>
+        </div>
+
+        <div class="kpi-card kpi-blue">
+            <div class="kpi-icon">
+                <i class="fas fa-chart-bar"></i>
+            </div>
+            <div class="kpi-content">
+                <h3>Existencia Actual</h3>
+                <span class="kpi-number">115</span>
+            </div>
+        </div>
+
+        <div class="kpi-card kpi-orange">
+            <div class="kpi-icon">
+                <i class="fas fa-credit-card"></i>
+            </div>
+            <div class="kpi-content">
+                <h3>Importe Vendido</h3>
+                <span class="kpi-number">$ {{ "%.0f"|format(importe_vendido) }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="kpi-row">
+        <!-- Métricas Financieras -->
+        <div class="kpi-card kpi-green">
+            <div class="kpi-icon">
+                <i class="fas fa-dollar-sign"></i>
+            </div>
+            <div class="kpi-content">
+                <h3>Importe Pagado</h3>
+                <span class="kpi-number">$ {{ "%.0f"|format(importe_vendido) }}</span>
+            </div>
+        </div>
+
+        <div class="kpi-card kpi-red">
+            <div class="kpi-icon">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="kpi-content">
+                <h3>Importe Restante</h3>
+                <span class="kpi-number">$ 0</span>
+            </div>
+        </div>
+
+        <div class="kpi-card kpi-brown">
+            <div class="kpi-icon">
+                <i class="fas fa-file-check"></i>
+            </div>
+            <div class="kpi-content">
+                <h3>Beneficio Bruto</h3>
+                <span class="kpi-number">$ 89</span>
+            </div>
+        </div>
+
+        <div class="kpi-card kpi-teal">
+            <div class="kpi-icon">
+                <i class="fas fa-bullseye"></i>
+            </div>
+            <div class="kpi-content">
+                <h3>Beneficio Neto</h3>
+                <span class="kpi-number">$ 89</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Información adicional -->
+<div class="dashboard-info">
+    <div class="info-section">
+        <h3>Proyectos Recientes</h3>
+        <div class="info-list">
+            {% for proyecto in proyectos_recientes %}
+            <div class="info-item">
+                <i class="fas fa-folder"></i>
+                <div class="info-content">
+                    <strong>{{ proyecto.nombre_proyecto }}</strong>
+                    <span>{{ proyecto.cliente.nombre_completo }}</span>
+                </div>
+                <span class="info-status status-{{ proyecto.estado }}">{{ proyecto.estado.title() }}</span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="info-section">
+        <h3>Ventas Recientes</h3>
+        <div class="info-list">
+            {% for venta in ventas_recientes %}
+            <div class="info-item">
+                <i class="fas fa-receipt"></i>
+                <div class="info-content">
+                    <strong>Venta #{{ venta.id_venta }}</strong>
+                    <span>{{ venta.cliente.nombre_completo }}</span>
+                </div>
+                <span class="info-amount">${{ "%.2f"|format(venta.total) }}</span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+

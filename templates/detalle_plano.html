@@ -1,0 +1,140 @@
+{% extends "layout.html" %}
+
+{% block title %}Detalle del Plano - As Plot Center{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Detalle del Plano</h1>
+    <p>Información completa del plano</p>
+    <a href="{{ url_for('planos') }}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i>
+        Volver a Planos
+    </a>
+</div>
+
+<div class="detail-container">
+    <div class="detail-card">
+        <div class="detail-header">
+            <h2>{{ plano.nombre_plano }}</h2>
+            <span class="type-badge type-{{ plano.tipo_plano.nombre_tipo.lower() }}">
+                {{ plano.tipo_plano.nombre_tipo }}
+            </span>
+        </div>
+        
+        <div class="detail-body">
+            <div class="detail-section">
+                <h3><i class="fas fa-info-circle"></i> Información General</h3>
+                <div class="detail-grid">
+                    <div class="detail-field">
+                        <label>ID del Plano:</label>
+                        <span>{{ plano.id_plano }}</span>
+                    </div>
+                    <div class="detail-field">
+                        <label>Nombre del Archivo:</label>
+                        <span>{{ plano.archivo }}</span>
+                    </div>
+                    <div class="detail-field">
+                        <label>Tipo de Archivo:</label>
+                        <span>{{ plano.archivo.split('.')[-1].upper() }}</span>
+                    </div>
+                    <div class="detail-field">
+                        <label>Fecha de Subida:</label>
+                        <span>{{ plano.fecha_subida.strftime('%d/%m/%Y %H:%M:%S') }}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="detail-section">
+                <h3><i class="fas fa-folder"></i> Información del Proyecto</h3>
+                <div class="detail-grid">
+                    <div class="detail-field">
+                        <label>Proyecto:</label>
+                        <span><strong>{{ plano.proyecto.nombre_proyecto }}</strong></span>
+                    </div>
+                    <div class="detail-field">
+                        <label>Descripción del Proyecto:</label>
+                        <span>{{ plano.proyecto.descripcion }}</span>
+                    </div>
+                    <div class="detail-field">
+                        <label>Estado del Proyecto:</label>
+                        <span class="status-badge status-{{ plano.proyecto.estado }}">
+                            {{ plano.proyecto.estado.title() }}
+                        </span>
+                    </div>
+                    <div class="detail-field">
+                        <label>Fecha de Inicio:</label>
+                        <span>{{ plano.proyecto.fecha_inicio.strftime('%d/%m/%Y') }}</span>
+                    </div>
+                    <div class="detail-field">
+                        <label>Fecha de Fin:</label>
+                        <span>{{ plano.proyecto.fecha_fin.strftime('%d/%m/%Y') }}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="detail-section">
+                <h3><i class="fas fa-user"></i> Información del Cliente</h3>
+                <div class="detail-grid">
+                    <div class="detail-field">
+                        <label>Cliente:</label>
+                        <span><strong>{{ plano.proyecto.cliente.nombre_completo }}</strong></span>
+                    </div>
+                    <div class="detail-field">
+                        <label>Email:</label>
+                        <span>{{ plano.proyecto.cliente.email }}</span>
+                    </div>
+                    <div class="detail-field">
+                        <label>Teléfono:</label>
+                        <span>{{ plano.proyecto.cliente.telefono }}</span>
+                    </div>
+                    <div class="detail-field">
+                        <label>Dirección:</label>
+                        <span>{{ plano.proyecto.cliente.direccion }}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="detail-section">
+                <h3><i class="fas fa-user-tie"></i> Usuario que Subió el Plano</h3>
+                <div class="detail-grid">
+                    <div class="detail-field">
+                        <label>Usuario:</label>
+                        <span>{{ plano.usuario.nombre_usuario }}</span>
+                    </div>
+                    <div class="detail-field">
+                        <label>Nombre Completo:</label>
+                        <span>{{ plano.usuario.nombre_completo or 'No especificado' }}</span>
+                    </div>
+                    <div class="detail-field">
+                        <label>Email:</label>
+                        <span>{{ plano.usuario.email }}</span>
+                    </div>
+                    <div class="detail-field">
+                        <label>Rol:</label>
+                        <span class="badge badge-{{ plano.usuario.rol }}">{{ plano.usuario.rol.title() }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="detail-actions">
+            <a href="{{ url_for('ver_plano', id=plano.id_plano) }}" 
+               class="btn btn-green" target="_blank">
+                <i class="fas fa-eye"></i>
+                Ver Plano
+            </a>
+            <a href="{{ url_for('descargar_plano', id=plano.id_plano) }}" 
+               class="btn btn-blue">
+                <i class="fas fa-download"></i>
+                Descargar Plano
+            </a>
+            <a href="{{ url_for('eliminar_plano', id=plano.id_plano) }}" 
+               class="btn btn-red"
+               onclick="return confirm('¿Estás seguro de que quieres eliminar este plano?')">
+                <i class="fas fa-trash"></i>
+                Eliminar Plano
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

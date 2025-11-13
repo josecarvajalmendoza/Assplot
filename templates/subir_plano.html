@@ -1,0 +1,80 @@
+{% extends "layout.html" %}
+
+{% block title %}Subir Plano - As Plot Center{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Subir Nuevo Plano</h1>
+    <a href="{{ url_for('planos') }}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i>
+        Volver
+    </a>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+{% if not proyectos %}
+<div class="alert alert-warning">
+    <strong>¡Atención!</strong> No hay proyectos registrados. 
+    <a href="{{ url_for('crear_proyecto') }}">Crea un proyecto primero</a> para poder subir planos.
+</div>
+{% endif %}
+
+<div class="form-container">
+    <form method="POST" enctype="multipart/form-data" class="form">
+        <div class="form-group">
+            <label for="nombre_plano">Nombre del Plano *</label>
+            <input type="text" id="nombre_plano" name="nombre_plano" required>
+        </div>
+
+        <div class="form-group">
+            <label for="id_proyecto">Proyecto *</label>
+            <select id="id_proyecto" name="id_proyecto" required>
+                <option value="">Seleccionar proyecto</option>
+                {% for proyecto in proyectos %}
+                <option value="{{ proyecto.id_proyecto }}">{{ proyecto.nombre_proyecto }} - {{ proyecto.cliente.nombre_completo }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="id_tipo_plano">Tipo de Plano *</label>
+            <select id="id_tipo_plano" name="id_tipo_plano" required>
+                <option value="">Seleccionar tipo</option>
+                {% for tipo in tipos_plano %}
+                <option value="{{ tipo.id_tipo_plano }}">{{ tipo.nombre_tipo }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="archivo">Archivo *</label>
+            <div class="file-upload">
+                <input type="file" id="archivo" name="archivo" accept=".pdf,.dwg,.dxf,.jpg,.jpeg,.png" required>
+                <div class="file-upload-info">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Formatos permitidos: PDF, DWG, DXF, JPG, PNG</p>
+                    <p>Tamaño máximo: 16MB</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-upload"></i>
+                Subir Plano
+            </button>
+            <a href="{{ url_for('planos') }}" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+

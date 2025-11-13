@@ -1,0 +1,82 @@
+{% extends "layout.html" %}
+
+{% block title %}Gestión de Clientes - As Plot Center{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Gestión de Clientes</h1>
+    <a href="{{ url_for('crear_cliente') }}" class="btn btn-primary">
+        <i class="fas fa-plus"></i>
+        Agregar Cliente
+    </a>
+</div>
+
+<!-- Barra de búsqueda -->
+<div class="search-section">
+    <form method="GET" class="search-form">
+        <div class="search-input">
+            <i class="fas fa-search"></i>
+            <input type="text" name="search" placeholder="Buscar Cliente por nombre, empresa..." value="{{ search }}">
+        </div>
+    </form>
+</div>
+
+<!-- Tabla de clientes -->
+<div class="table-container">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Cliente</th>
+                <th>Contacto</th>
+                <th>Ubicación</th>
+                <th>Proyectos</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cliente in clientes %}
+            <tr>
+                <td>
+                    <div class="client-info">
+                        <strong>{{ cliente.nombre_completo }}</strong>
+                        <span>{{ cliente.email }}</span>
+                    </div>
+                </td>
+                <td>
+                    <div class="contact-info">
+                        <span>{{ cliente.email }}</span>
+                        <span>{{ cliente.telefono }}</span>
+                    </div>
+                </td>
+                <td>{{ cliente.direccion }}</td>
+                <td>
+                    <span class="badge badge-green">{{ cliente.proyectos|length }} proyectos</span>
+                </td>
+                <td>
+                    <div class="action-buttons">
+                        <a href="{{ url_for('editar_cliente', id=cliente.id_cliente) }}" class="btn btn-sm btn-blue">
+                            <i class="fas fa-edit"></i>
+                            Editar
+                        </a>
+                        <a href="{{ url_for('eliminar_cliente', id=cliente.id_cliente) }}" 
+                           class="btn btn-sm btn-red"
+                           onclick="return confirm('¿Estás seguro de que quieres eliminar este cliente?')">
+                            <i class="fas fa-trash"></i>
+                            Eliminar
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="5" class="no-data">
+                    <i class="fas fa-users"></i>
+                    <p>No hay clientes registrados</p>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+

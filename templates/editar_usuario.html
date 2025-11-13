@@ -1,0 +1,107 @@
+{% extends "layout.html" %}
+
+{% block title %}Editar Usuario - As Plot Center{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Editar Usuario</h1>
+    <p>Modifica la información del usuario</p>
+    <a href="{{ url_for('usuarios') }}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i>
+        Volver
+    </a>
+</div>
+
+<div class="form-container">
+    <form method="POST" class="form-card">
+        <div class="form-section">
+            <h3>Información de Acceso</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="nombre_usuario">Nombre de Usuario *</label>
+                    <input type="text" id="nombre_usuario" name="nombre_usuario" 
+                           class="form-control" value="{{ usuario.nombre_usuario }}" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email *</label>
+                    <input type="email" id="email" name="email" 
+                           class="form-control" value="{{ usuario.email }}" required>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="password">Nueva Contraseña</label>
+                    <input type="password" id="password" name="password" 
+                           class="form-control" minlength="6">
+                    <small>Dejar en blanco para mantener la contraseña actual</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="rol">Rol *</label>
+                    <select id="rol" name="rol" class="form-control" required>
+                        <option value="administrador" {% if usuario.rol == 'administrador' %}selected{% endif %}>Administrador</option>
+                        <option value="laboral" {% if usuario.rol == 'laboral' %}selected{% endif %}>Laboral</option>
+                        <option value="cliente" {% if usuario.rol == 'cliente' %}selected{% endif %}>Cliente</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-section">
+            <h3>Información Personal</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="nombre_completo">Nombre Completo</label>
+                    <input type="text" id="nombre_completo" name="nombre_completo" 
+                           class="form-control" value="{{ usuario.nombre_completo or '' }}">
+                </div>
+                
+                <div class="form-group">
+                    <label for="telefono">Teléfono</label>
+                    <input type="tel" id="telefono" name="telefono" 
+                           class="form-control" value="{{ usuario.telefono or '' }}">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="direccion">Dirección</label>
+                <textarea id="direccion" name="direccion" 
+                          class="form-control" rows="3">{{ usuario.direccion or '' }}</textarea>
+            </div>
+        </div>
+        
+        <div class="form-section">
+            <h3>Información Adicional</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <label>ID de Usuario:</label>
+                    <span>{{ usuario.id_usuario }}</span>
+                </div>
+                <div class="info-item">
+                    <label>Fecha de Creación:</label>
+                    <span>{{ usuario.fecha_creacion.strftime('%d/%m/%Y %H:%M') if usuario.fecha_creacion else 'No disponible' }}</span>
+                </div>
+                <div class="info-item">
+                    <label>Estado:</label>
+                    <span class="{% if usuario.activo %}text-success{% else %}text-danger{% endif %}">
+                        {{ 'Activo' if usuario.activo else 'Inactivo' }}
+                    </span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i>
+                Guardar Cambios
+            </button>
+            <a href="{{ url_for('usuarios') }}" class="btn btn-secondary">
+                <i class="fas fa-times"></i>
+                Cancelar
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

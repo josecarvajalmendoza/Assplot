@@ -1,0 +1,178 @@
+{% extends "layout.html" %}
+
+{% block title %}Crear Venta - As Plot Center{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Nueva Venta</h1>
+    <p>Registra una nueva venta en el sistema</p>
+    <a href="{{ url_for('ventas') }}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i>
+        Volver
+    </a>
+</div>
+
+<div class="form-container">
+    <form method="POST" class="form-card" id="venta-form">
+        <div class="form-section">
+            <h3>Información del Cliente</h3>
+            <div class="form-group">
+                <label for="id_cliente">Cliente *</label>
+                <select id="id_cliente" name="id_cliente" class="form-control" required>
+                    <option value="">Seleccione un cliente</option>
+                    {% for cliente in clientes %}
+                    <option value="{{ cliente.id_cliente }}">
+                        {{ cliente.nombre_completo }} - {{ cliente.email }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3>Servicios a Facturar</h3>
+            <div id="items-container">
+                <div class="item-row">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Tipo de Servicio *</label>
+                            <select name="tipo_servicio[]" class="form-control servicio-select" required>
+                                <option value="">Seleccione un servicio</option>
+                                <option value="plano">Plano</option>
+                                <option value="renderizado">Renderizado 3D</option>
+                            </select>
+                        </div>
+                        <div class="form-group tipo-plano-group" style="display:none;">
+                            <label>Tipo de Plano</label>
+                            <select name="tipo_plano[]" class="form-control">
+                                <option value="">Seleccione tipo</option>
+                                {% for tipo in tipos_plano %}
+                                <option value="{{ tipo.id_tipo_plano }}">
+                                    {{ tipo.nombre_tipo }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Descripción *</label>
+                            <input type="text" name="descripcion[]" class="form-control" 
+                                   placeholder="Ej: Plano arquitectónico A1" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Cantidad *</label>
+                            <input type="number" name="cantidad[]" class="form-control cantidad-input" 
+                                   min="1" value="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Precio Unitario *</label>
+                            <input type="number" name="precio[]" class="form-control precio-input" 
+                                   step="0.01" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <button type="button" class="btn btn-sm btn-red remove-item" style="margin-top: 25px;">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button type="button" id="add-item" class="btn btn-secondary">
+                <i class="fas fa-plus"></i>
+                Agregar Servicio
+            </button>
+        </div>
+
+        <div class="form-section">
+            <h3>Información de Pago</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="metodo_pago">Método de Pago *</label>
+                    <select id="metodo_pago" name="metodo_pago" class="form-control" required>
+                        <option value="efectivo">Efectivo</option>
+                        <option value="tarjeta">Tarjeta</option>
+                        <option value="transferencia">Transferencia</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="impuesto">Impuesto ($)</label>
+                    <input type="number" id="impuesto" name="impuesto" 
+                           class="form-control" step="0.01" min="0" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="descuento">Descuento ($)</label>
+                    <input type="number" id="descuento" name="descuento" 
+                           class="form-control" step="0.01" min="0" value="0">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="notas">Notas</label>
+                <textarea id="notas" name="notas" class="form-control" rows="3"></textarea>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i>
+                Registrar Venta
+            </button>
+            <a href="{{ url_for('ventas') }}" class="btn btn-secondary">
+                <i class="fas fa-times"></i>
+                Cancelar
+            </a>
+        </div>
+    </form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const itemsContainer = document.getElementById('items-container');
+    const addItemBtn = document.getElementById('add-item');
+
+    // Agregar nuevo item
+    addItemBtn.addEventListener('click', function() {
+        const newItem = itemsContainer.querySelector('.item-row').cloneNode(true);
+        newItem.querySelectorAll('input, select').forEach(input => {
+            if (input.type !== 'button') input.value = '';
+        });
+        newItem.querySelector('.tipo-plano-group').style.display = 'none';
+        itemsContainer.appendChild(newItem);
+        attachEventListeners(newItem);
+    });
+
+    // Eliminar item
+    function attachEventListeners(row) {
+        const removeBtn = row.querySelector('.remove-item');
+        const servicioSelect = row.querySelector('.servicio-select');
+        const tipoPlanoGroup = row.querySelector('.tipo-plano-group');
+        const precioInput = row.querySelector('.precio-input');
+
+        removeBtn.addEventListener('click', function() {
+            if (itemsContainer.querySelectorAll('.item-row').length > 1) {
+                row.remove();
+            } else {
+                alert('Debe haber al menos un servicio en la venta');
+            }
+        });
+
+        servicioSelect.addEventListener('change', function() {
+            if (this.value === 'plano') {
+                tipoPlanoGroup.style.display = 'block';
+                // Precios sugeridos para planos
+                precioInput.value = '50.00';
+            } else if (this.value === 'renderizado') {
+                tipoPlanoGroup.style.display = 'none';
+                // Precio sugerido para renderizado
+                precioInput.value = '150.00';
+            } else {
+                tipoPlanoGroup.style.display = 'none';
+                precioInput.value = '';
+            }
+        });
+    }
+
+    // Attach listeners to initial row
+    attachEventListeners(itemsContainer.querySelector('.item-row'));
+});
+</script>
+{% endblock %}
